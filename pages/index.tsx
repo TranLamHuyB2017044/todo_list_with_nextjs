@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import Link from 'next/link'
+import MyAlert from '../src/components/AlertComponents/Alert'
 export default function Page() {
 	const [products, setProducts] = useState<any>([]);
 	const [nameError, setNameError] = useState(false)
@@ -9,7 +11,7 @@ export default function Page() {
 	let NameRef: any = useRef();
 	let PriceRef: any = useRef();
 
-
+	
 	const columns: GridColDef<(typeof products)[number]>[] = [
 		{ field: 'id', headerName: 'ProductId', width: 150, renderCell: (row: any) => row.id },
 		{ field: 'name', headerName: 'Product Name', width: 250, renderCell: (row: any) => row.name },
@@ -22,7 +24,11 @@ export default function Page() {
 				&times;
 			</button>)
 		},
-		{ field: 'edit', headerName: 'Edit', width: 100, renderCell: (row: any) => (<div className="text-[dodgerblue] cursor-pointer"><EditNoteIcon front-size='large' /></div>) },
+		{ 
+			field: 'edit', headerName: 'Edit', width: 100, renderCell: (row: any) => (<Link href={`/edit/${row.id}`} 
+				className="text-[dodgerblue] cursor-pointer">
+					<EditNoteIcon front-size='large' />
+			</Link>)},
 
 	];
 
@@ -57,10 +63,10 @@ export default function Page() {
 			const id = Math.floor(Math.random() * 10000);
 			const item = { id: id, name: product_name, price: parseInt(product_price) }
 			setProducts((prev: any) => [
-				...prev,
 				item,
+				...prev,
 			]);
-			window.localStorage.setItem('ProductList', JSON.stringify([...products, item]))
+			window.localStorage.setItem('ProductList', JSON.stringify([item, ...products]))
 			NameRef.current.value = "";
 			PriceRef.current.value = "";
 			setNameError(false)
@@ -71,15 +77,21 @@ export default function Page() {
 
 	const deleteProduct = (index: number) => {
 		const productList = [...products];
-		productList.map((product: any) => {
-			if (index === product.id) {
-				const newProduct = productList.filter(
-					(product: any) => product.id !== index
-				);
-				window.localStorage.setItem('ProductList', JSON.stringify(newProduct))
-				setProducts(newProduct);
+		MyAlert.Confirm('Delete this product ?', 'warning', `Are you sure to delete this product`, 'Yes')
+		.then(async (result) => {
+			if (result.value) {
+				productList.map((product: any) => {
+					if (index === product.id) {
+						const newProduct = productList.filter(
+							(product: any) => product.id !== index
+						);
+						window.localStorage.setItem('ProductList', JSON.stringify(newProduct))
+						setProducts(newProduct);
+					}
+				});
 			}
-		});
+		})
+		
 	};
 
 	return (
