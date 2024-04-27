@@ -8,8 +8,8 @@ export default function Edit() {
     const params = useRouter()
     const params_id = params.query.id as string
     const [productName, setProductName] = useState('')
-    const [productPrice, setProductPrice] = useState('')
-    const [error, setError] = useState(false) 
+    const [productPrice, setProductPrice] = useState<number>()
+    const [error, setError] = useState(false)
 
 
     // Get all Products
@@ -19,7 +19,6 @@ export default function Edit() {
             const Items = JSON.parse(data);
             setProductList(Items)
         }
-
     }, [])
 
     // Get Product_by_id
@@ -29,19 +28,18 @@ export default function Edit() {
     }, [productList, params_id])
 
 
-
     const handleEditProduct = (e: any) => {
         e.preventDefault()
-        if (productPrice == '' && productName == '') {
+        if (productPrice == undefined && productName == '') {
             setError(true)
             return false
         } else {
-            const updatedData = { 
-                id: parseInt(params_id), 
-                name: productName || product[0].name, 
-                price: productPrice || product[0].price 
+            const updatedData: { id: number, name: string, price: number } = {
+                id: parseInt(params_id),
+                name: productName || product[0].name,
+                price: productPrice || product[0].price
             }
-            const list_product_deleted_element = productList.filter((item: any) => item.id != params_id)
+            const list_product_deleted_element: any = productList.filter((item: any) => item.id != params_id)
             const updatedProductList: any = [updatedData, ...list_product_deleted_element]
             window.localStorage.setItem('ProductList', JSON.stringify(updatedProductList))
             MyAlert.Toast('success', 'Product updated successfully')
@@ -82,7 +80,7 @@ export default function Edit() {
                             type="number"
                             id="price"
                             className="border-[1px] border-[dodgerblue] w-[200px] h-[40px] pl-2"
-                            onChange={(e) => setProductPrice(e.target.value)}
+                            onChange={(e) => setProductPrice(parseInt(e.target.value))}
                         />
                     </div>
                     {error && <p className="text-red-500 flex justify-end -mt-3 mr-12">Price do not change</p>}
@@ -103,7 +101,6 @@ export default function Edit() {
                         >
                             Save
                         </button>
-
                     </div>
                 </div>
             </form>

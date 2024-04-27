@@ -1,21 +1,21 @@
 import { useEffect, useRef, useState } from "react";
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import Link from 'next/link'
-import MyAlert from '../src/components/AlertComponents/Alert'
+import MyAlert from '../components/AlertComponents/Alert'
 export default function Page() {
 	const [products, setProducts] = useState<any>([]);
-	const [nameError, setNameError] = useState(false)
-	const [priceError, setPriceError] = useState(false)
+	const [nameError, setNameError] = useState<boolean>(false)
+	const [priceError, setPriceError] = useState<boolean>(false)
 	let NameRef: any = useRef();
 	let PriceRef: any = useRef();
 
-	
-	const columns: GridColDef<(typeof products)[number]>[] = [
-		{ field: 'id', headerName: 'ProductId', width: 150, renderCell: (row: any) => row.id },
-		{ field: 'name', headerName: 'Product Name', width: 250, renderCell: (row: any) => row.name },
-		{ field: 'price', headerName: 'Price (vnd)', width: 150, renderCell: (row: any) => row.price },
+
+	const columns:any = [
+		{ 	field: 'id', headerName: 'ProductId', width: 150, renderCell: (row: any) => row.id },
+		{ 	field: 'name', headerName: 'Product Name', width: 250, renderCell: (row: any) => row.name },
+		{ 	field: 'price', headerName: 'Price (vnd)', width: 150, renderCell: (row: any) => row.price },
 		{
 			field: 'delete', headerName: 'Delete', width: 100, renderCell: (row: any) => (<button
 				onClick={() => deleteProduct(row.id)}
@@ -28,8 +28,8 @@ export default function Page() {
 			field: 'edit', headerName: 'Edit', width: 100, renderCell: (row: any) => (<Link href={`/edit/${row.id}`} 
 				className="text-[dodgerblue] cursor-pointer">
 					<EditNoteIcon front-size='large' />
-			</Link>)},
-
+			</Link>)
+		},
 	];
 
 	useEffect(() => {
@@ -38,30 +38,29 @@ export default function Page() {
 			const Items = JSON.parse(data);
 			setProducts(Items)
 		}
-
 	}, [])
 
 
 
 	const addProduct = (e: any) => {
 		e.preventDefault();
-		const product_name = NameRef.current.value;
-		const product_price = PriceRef.current.value;
-		if (product_name == '' && product_price != '') {
+		const product_name:string = NameRef.current.value;
+		const product_price:number = PriceRef.current.value;
+		if (product_name == '' && product_price != 0) {
 			setNameError(true)
 			setPriceError(false)
 			return false
-		} else if (product_price == '' && product_name != '') {
+		} else if (product_price == 0 && product_name != '') {
 			setPriceError(true)
 			setNameError(false)
 			return false
-		} else if (product_price == '' && product_name == '') {
+		} else if (product_price == 0 && product_name == '') {
 			setPriceError(true)
 			setNameError(true)
 			return false
 		} else {
 			const id = Math.floor(Math.random() * 10000);
-			const item = { id: id, name: product_name, price: parseInt(product_price) }
+			const item = { id: id, name: product_name, price: product_price }
 			setProducts((prev: any) => [
 				item,
 				...prev,
@@ -75,7 +74,7 @@ export default function Page() {
 	};
 
 
-	const deleteProduct = (index: number) => {
+	const deleteProduct = (index: number):void => {
 		const productList = [...products];
 		MyAlert.Confirm('Delete this product ?', 'warning', `Are you sure to delete this product`, 'Yes')
 		.then(async (result) => {
@@ -95,10 +94,8 @@ export default function Page() {
 	};
 
 	return (
-		<main className="relative">
-
-
-			<h1 className="text-5xl my-5 text-center">TODO LIST WITH NEXT JS</h1>
+		<main className="relative ">
+			<h1 className="text-5xl my-5 text-center ">TODO LIST WITH NEXT JS</h1>
 			<form className="todo-list flex flex-col justify-center items-center gap-4 ">
 				<h2>Type input below to add product</h2>
 				<div className="flex flex-col gap-4 mt-5">
