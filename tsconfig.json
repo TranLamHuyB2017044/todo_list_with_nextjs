@@ -32,7 +32,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "src/components/AlertComponents/Alert.js"  ],
+, "src/components/AlertComponents/Alert.tsx"  ],
   "exclude": [
     "node_modules"
   ]

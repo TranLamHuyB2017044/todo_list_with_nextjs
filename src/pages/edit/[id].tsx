@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import MyAlert from '../../src/components/AlertComponents/Alert'
+import MyAlert from '../../components/AlertComponents/Alert'
 import Link from 'next/link'
 export default function Edit() {
     const [productList, setProductList] = useState<any>([])
     const [product, setProduct] = useState<any>({})
     const params = useRouter()
     const params_id = params.query.id as string
-    const [productName, setProductName] = useState('')
+    const [productName, setProductName] = useState<string>('')
     const [productPrice, setProductPrice] = useState<number>()
-    const [error, setError] = useState(false)
+    const [error, setError] = useState<boolean>(false)
 
 
     // Get all Products
@@ -51,10 +51,10 @@ export default function Edit() {
     }
 
     return (
-        <div className='form-container '>
+        <div className='form-container'>
             <h3 className='text-4xl text-center mt-5'>Edit Product</h3>
             <form className="todo-list flex flex-col justify-center items-center gap-4 mt-5 ">
-                <div className="flex flex-col gap-4 mt-5 border-[1px] border-[dodger-blue] p-5 bg-[#e1dddd]">
+                <div className="flex flex-col gap-4 mt-5 border-[1px] border-[dodger-blue] p-5 bg-[#e1dddd] rounded-lg">
                     <p>Edit ProductId: {product[0]?.id}</p>
                     <div className="form-group flex gap-4">
                         <label htmlFor="name" className="min-w-[150px]">
